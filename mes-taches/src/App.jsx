@@ -101,6 +101,14 @@ function App() {
     setTaches((tachesActuelles) => tachesActuelles.filter((tache) => !tache.terminee))
   }
 
+  function modifierTache(id, titre) {
+    const titreNettoye = titre.trim()
+    if (!titreNettoye) return
+    setTaches((tachesActuelles) => tachesActuelles.map((tache) =>
+      tache.id === id ? { ...tache, titre: titreNettoye } : tache,
+    ))
+  }
+
   const tachesVisibles = taches.filter((tache) => {
     if (filtre === 'actives') return !tache.terminee
     if (filtre === 'terminees') return tache.terminee
@@ -143,6 +151,7 @@ function App() {
               taches={tachesVisibles}
               onBasculer={basculerTache}
               onSupprimer={supprimerTache}
+              onModifier={modifierTache}
             />
           )}
         </Carte>
