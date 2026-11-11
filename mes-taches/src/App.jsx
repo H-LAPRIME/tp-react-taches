@@ -14,6 +14,7 @@ function App() {
   const [filtre, setFiltre] = useState('toutes')
   const [chargement, setChargement] = useState(true)
   const [erreur, setErreur] = useState(null)
+  const [horlogeVisible, setHorlogeVisible] = useState(true)
 
   const restantes = taches.filter((tache) => !tache.terminee).length
 
@@ -125,7 +126,14 @@ function App() {
         </Carte>
 
         <Carte titre="Heure actuelle">
-          <Horloge />
+          <button
+            type="button"
+            aria-expanded={horlogeVisible}
+            onClick={() => setHorlogeVisible((visible) => !visible)}
+          >
+            {horlogeVisible ? "Masquer l’horloge" : "Afficher l’horloge"}
+          </button>
+          {horlogeVisible && <Horloge />}
         </Carte>
 
         <Carte titre="Nouvelle tâche">

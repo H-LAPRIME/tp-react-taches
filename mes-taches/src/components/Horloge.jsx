@@ -8,7 +8,10 @@ function Horloge() {
       setMaintenant(new Date())
     }, 1000)
 
-    return () => clearInterval(intervalle)
+    return () => {
+      clearInterval(intervalle)
+      console.log('Nettoyage de l’horloge : intervalle arrêté')
+    }
   }, [])
 
   return (
