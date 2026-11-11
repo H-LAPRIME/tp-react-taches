@@ -20,6 +20,26 @@ function App() {
   useEffect(() => {
     let annule = false
 
+    try {
+      const sauvegarde = localStorage.getItem('mes-taches')
+      if (sauvegarde !== null) {
+        const donnees = JSON.parse(sauvegarde)
+        if (!Array.isArray(donnees) || !donnees.every((tache) =>
+          tache !== null && typeof tache === 'object' &&
+          typeof tache.id === 'number' && typeof tache.titre === 'string' &&
+          typeof tache.terminee === 'boolean',
+        )) throw new Error('Sauvegarde invalide')
+        Promise.resolve().then(() => {
+          if (annule) return
+          setTaches(donnees)
+          setChargement(false)
+        })
+        return () => { annule = true }
+      }
+    } catch (err) {
+      console.warn('Sauvegarde locale indisponible, chargement du JSON.', err)
+    }
+
     fetch('/taches.json')
       .then((reponse) => {
         if (!reponse.ok) {
@@ -42,6 +62,15 @@ function App() {
       annule = true
     }
   }, [])
+
+  useEffect(() => {
+    if (chargement || erreur !== null) return
+    try {
+      localStorage.setItem('mes-taches', JSON.stringify(taches))
+    } catch (err) {
+      console.warn('Impossible de sauvegarder les tâches localement.', err)
+    }
+  }, [taches, chargement, erreur])
 
   useEffect(() => {
     document.title = `(${restantes}) Mes tâches`
